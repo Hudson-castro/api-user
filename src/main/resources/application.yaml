@@ -4,14 +4,17 @@ server:
 spring:
   application:
     name: user-api
-secuity:
-  enabled: false
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   datasource:
-    url: jdbc:h2:mem:userdb
+    url: jdbc:h2:mem:userdb;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
-    password: ""
+    password:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -22,8 +25,5 @@ secuity:
       hibernate:
         format_sql: true
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+
 

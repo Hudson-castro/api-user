@@ -4,7 +4,9 @@ import br.com.invest.api.user_api.entity.User;
 import br.com.invest.api.user_api.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.rmi.server.UID;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -27,5 +29,8 @@ public class UserService {
         return repository.findAll();
     }
 
-
+ public User finById(UUID id) {
+        return repository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Usuário não encontrado "));
+ }
 }
