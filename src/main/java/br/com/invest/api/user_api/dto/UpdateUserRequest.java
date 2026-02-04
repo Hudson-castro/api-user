@@ -11,5 +11,4 @@ public record UpdateUserRequest(
         @Email(message = "Email inválido")
         @NotBlank(message = "Email é obrigatório")
         String email
-
 ) {}

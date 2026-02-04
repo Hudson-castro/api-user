@@ -2,44 +2,45 @@ package br.com.invest.api.user_api.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
 @Entity
-@Table(name = "Users") //Controle explícito
+@Table(name = "Users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(nullable = false, updatable = false)
-    private UUID id; //Para evitar enumeraÇão de IDS
+    @GeneratedValue
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    protected User() {
+    @Column(nullable = false)
+    private String password;
 
-        //Construtor protegido exigido pelo JPA
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    protected User() {
     }
 
-    public User(String name, String email) {
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
+        this.password = password;
+        this.createdAt = LocalDateTime.now();
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public String getName() {
@@ -50,9 +51,32 @@ public class User {
         this.name = name;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
 
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

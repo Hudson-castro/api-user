@@ -6,9 +6,10 @@ import br.com.invest.api.user_api.dto.UserResponse;
 import br.com.invest.api.user_api.entity.User;
 import br.com.invest.api.user_api.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,44 +23,64 @@ public class UserController {
         this.service = service;
     }
 
-    // CREATE
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse create(@RequestBody @Valid CreateUserRequest request) {
-        User user = service.create(request.name(), request.email());
-        return UserResponse.fromEntity(user);
+    public ResponseEntity<UserResponse> create(
+            @RequestBody @Valid CreateUserRequest request
+    ) {
+        User user = service.create(
+                request.name(),
+                request.email(),
+                request.password()
+        );
+
+        URI location = URI.create("/users/" + user.getId());
+
+        return ResponseEntity
+                .created(location)
+                .body(UserResponse.fromEntity(user));
     }
 
-    // READ ALL
+
     @GetMapping
-    public List<UserResponse> list() {
-        return service.findAll()
+    public ResponseEntity<List<UserResponse>> list() {
+        List<UserResponse> users = service.findAll()
                 .stream()
                 .map(UserResponse::fromEntity)
                 .toList();
+
+        return ResponseEntity.ok(users);
     }
 
-    // READ BY ID
     @GetMapping("/{id}")
-    public UserResponse findById(@PathVariable UUID id) {
+    public ResponseEntity<UserResponse> findById(
+            @PathVariable UUID id
+    ) {
         User user = service.findById(id);
-        return UserResponse.fromEntity(user);
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 
-    // UPDATE
+
+
     @PutMapping("/{id}")
-    public UserResponse update(
+    public ResponseEntity<UserResponse> update(
             @PathVariable UUID id,
             @RequestBody @Valid UpdateUserRequest request
     ) {
-        User user = service.update(id, request.name(), request.email());
-        return UserResponse.fromEntity(user);
+        User user = service.update(
+                id,
+                request.name(),
+                request.email()
+        );
+
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 
-    // DELETE
+
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(
+            @PathVariable UUID id
+    ) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

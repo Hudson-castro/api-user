@@ -2,23 +2,24 @@ package br.com.invest.api.user_api.dto;
 
 import br.com.invest.api.user_api.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public record UserResponse(
         UUID id,
         String name,
-        String email
+        String email,
+        Boolean active,
+        LocalDateTime createdAt
 ) {
     public static UserResponse fromEntity(User user) {
-
-        if (user == null) {
-            return null;
-        }
         return new UserResponse(
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getActive(),
+                user.getCreatedAt()
         );
     }
 
