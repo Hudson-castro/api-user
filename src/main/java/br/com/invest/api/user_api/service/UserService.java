@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
@@ -27,7 +26,6 @@ public class UserService {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     public User create(String name, String email, String rawPassword) {
         log.info("Criando usuário | email={}", email);
@@ -55,6 +53,7 @@ public class UserService {
         return getUserOrThrow(id);
     }
 
+    @Transactional
     public User update(UUID id, String name, String email) {
         log.info("Atualizando usuário | id={}", id);
 
@@ -71,6 +70,7 @@ public class UserService {
         log.info("Usuário atualizado com sucesso | id={}", updatedUser.getId());
 
         return updatedUser;
+
     }
 
     public void delete(UUID id) {

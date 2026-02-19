@@ -4,17 +4,17 @@ import br.com.invest.api.user_api.dto.CreateUserRequest;
 import br.com.invest.api.user_api.dto.UpdateUserRequest;
 import br.com.invest.api.user_api.dto.UserResponse;
 import br.com.invest.api.user_api.entity.User;
+import br.com.invest.api.user_api.mapper.UserMapper;
 import br.com.invest.api.user_api.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService service;
@@ -23,8 +23,9 @@ public class UserController {
         this.service = service;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<UserResponse> create(
+    public UserResponse create(
             @RequestBody @Valid CreateUserRequest request
     ) {
         User user = service.create(
@@ -33,36 +34,29 @@ public class UserController {
                 request.password()
         );
 
-        URI location = URI.create("/users/" + user.getId());
-
-        return ResponseEntity
-                .created(location)
-                .body(UserResponse.fromEntity(user));
+        return UserMapper.fromEntity(user);
     }
 
-
     @GetMapping
-    public ResponseEntity<List<UserResponse>> list() {
+    public List<UserResponse> list() {
         List<UserResponse> users = service.findAll()
                 .stream()
-                .map(UserResponse::fromEntity)
+                .map(UserMapper::fromEntity)
                 .toList();
 
-        return ResponseEntity.ok(users);
+        return users;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(
+    public UserResponse findById(
             @PathVariable UUID id
     ) {
         User user = service.findById(id);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
+        return UserMapper.fromEntity(user);
     }
 
-
-
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(
+    public UserResponse update(
             @PathVariable UUID id,
             @RequestBody @Valid UpdateUserRequest request
     ) {
@@ -72,15 +66,14 @@ public class UserController {
                 request.email()
         );
 
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
+        return UserMapper.fromEntity(user);
     }
 
-
+   @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
+    public void delete(
             @PathVariable UUID id
     ) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }
