@@ -43,7 +43,6 @@ public class UserController {
                 .stream()
                 .map(UserMapper::fromEntity)
                 .toList();
-
         return users;
     }
 

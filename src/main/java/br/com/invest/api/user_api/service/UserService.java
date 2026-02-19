@@ -52,7 +52,6 @@ public class UserService {
         log.debug("Buscando usuário | id={}", id);
         return getUserOrThrow(id);
     }
-
     @Transactional
     public User update(UUID id, String name, String email) {
         log.info("Atualizando usuário | id={}", id);
@@ -63,14 +62,12 @@ public class UserService {
             validateEmailUniqueness(email);
             user.setEmail(email);
         }
-
         user.setName(name);
 
         User updatedUser = repository.save(user);
         log.info("Usuário atualizado com sucesso | id={}", updatedUser.getId());
 
         return updatedUser;
-
     }
 
     public void delete(UUID id) {
