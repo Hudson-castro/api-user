@@ -31,9 +31,7 @@ public class UserService {
         log.info("Criando usuário | email={}", email);
 
         validateEmailUniqueness(email);
-
         String hashedPassword = passwordEncoder.encode(rawPassword);
-
         User user = new User(name, email, hashedPassword);
         User savedUser = repository.save(user);
 
@@ -52,6 +50,7 @@ public class UserService {
         log.debug("Buscando usuário | id={}", id);
         return getUserOrThrow(id);
     }
+
     @Transactional
     public User update(UUID id, String name, String email) {
         log.info("Atualizando usuário | id={}", id);
